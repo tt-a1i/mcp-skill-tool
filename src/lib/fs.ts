@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { parse as parseJsonc, printParseErrorCode } from "jsonc-parser/lib/esm/main.js";
+import JSON5 from "json5";
 
 export async function pathExists(filePath: string): Promise<boolean> {
   try {
@@ -40,15 +40,12 @@ export async function readJson<T>(filePath: string): Promise<T> {
 
 export async function readJsonc<T>(filePath: string): Promise<T> {
   const raw = await readText(filePath);
-  const errors: any[] = [];
-  const value = parseJsonc(raw, errors, { allowTrailingComma: true, disallowComments: false });
-  if (errors.length) {
-    const first = errors[0];
-    throw new Error(
-      `Failed to parse JSONC: ${filePath} (${printParseErrorCode(first.error)} at offset ${first.offset})`,
-    );
+  try {
+    return JSON5.parse(raw) as T;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new Error(`Failed to parse JSONC: ${filePath} (${msg})`);
   }
-  return value as T;
 }
 
 export async function writeJson(filePath: string, value: unknown): Promise<void> {
