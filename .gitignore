@@ -1,0 +1,20 @@
+node_modules
+dist
+.DS_Store
+
+# Local creds/config snapshots
+*.bak.*
+
+# Local per-user/project configs (do not publish)
+mcp-skill-tool.yaml
+opencode.json
+.mcp.json
+.gemini/settings.json
+
+# Research scratch
+research/
+
+# Workspace-local config directories
+.agent/
+.claude/
+.gemini/

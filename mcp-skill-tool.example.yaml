@@ -1,0 +1,17 @@
+version: 1
+mcpServers:
+  - name: context7
+    enabled: true
+    scope: repo
+    transport:
+      kind: stdio
+      command: npx
+      args:
+        - -y
+        - "@upstash/context7-mcp@latest"
+skills:
+  - name: my-skill
+    enabled: true
+    scope: repo
+    path: skills/my-skill
+

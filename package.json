@@ -1,0 +1,35 @@
+{
+  "name": "mcp-skill-tool",
+  "version": "0.1.0",
+  "description": "Cross-platform MCP + skill management tool for Antigravity, Claude Code, Gemini CLI, Codex CLI, and opencode.ai",
+  "type": "module",
+  "bin": {
+    "mcp-skill-tool": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/index.ts",
+    "prepack": "npm run build",
+    "test": "npm run build && node dist/index.js --help"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@iarna/toml": "^2.2.5",
+    "commander": "^14.0.2",
+    "js-yaml": "^4.1.1",
+    "jsonc-parser": "^3.3.1",
+    "yaml": "^2.8.2",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
