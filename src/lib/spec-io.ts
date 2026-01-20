@@ -1,6 +1,5 @@
-import fs from "node:fs/promises";
 import path from "node:path";
-import YAML from "yaml";
+import yaml from "js-yaml";
 import { ToolchainSpec, type ToolchainSpec as ToolchainSpecType } from "../spec.js";
 import { mkdirp, pathExists, readText, writeTextAtomic } from "./fs.js";
 
@@ -8,14 +7,12 @@ export const DEFAULT_SPEC_PATH = "mcp-skill-tool.yaml";
 
 export async function loadSpec(specPath: string): Promise<ToolchainSpecType> {
   const raw = await readText(specPath);
-  const parsed = YAML.parse(raw);
+  const parsed = yaml.load(raw);
   return ToolchainSpec.parse(parsed);
 }
 
 export async function saveSpec(specPath: string, spec: ToolchainSpecType): Promise<void> {
-  const doc = new YAML.Document(spec);
-  doc.contents = spec as any;
-  const out = doc.toString({ lineWidth: 0 });
+  const out = yaml.dump(spec, { lineWidth: -1, noRefs: true, sortKeys: false });
   await writeTextAtomic(specPath, out);
 }
 
@@ -26,7 +23,7 @@ export async function initSpecIfMissing(specPath: string): Promise<{ created: bo
   await saveSpec(specPath, initial);
   // also create conventional skill dir
   const skillsDir = path.join(path.dirname(specPath), "skills");
+  const fs = await import("node:fs/promises");
   await fs.mkdir(skillsDir, { recursive: true });
   return { created: true };
 }
-

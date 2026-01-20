@@ -1,5 +1,7 @@
 node_modules
 dist
+build
+packaged
 .DS_Store
 
 # Local creds/config snapshots

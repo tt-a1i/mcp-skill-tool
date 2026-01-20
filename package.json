@@ -12,8 +12,10 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "bundle": "esbuild src/index.ts --bundle --platform=node --format=cjs --target=node18 --outfile=build/bundle.cjs",
     "dev": "tsx src/index.ts",
     "prepack": "npm run build",
+    "package": "npm run bundle && pkg build/bundle.cjs --targets node18-macos-arm64 --output packaged/mcp-skill-tool-macos-arm64 && pkg build/bundle.cjs --targets node18-macos-x64 --output packaged/mcp-skill-tool-macos-x64 && pkg build/bundle.cjs --targets node18-win-x64 --output packaged/mcp-skill-tool-windows-x64.exe",
     "test": "npm run build && node dist/index.js --help"
   },
   "keywords": [],
@@ -24,12 +26,23 @@
     "commander": "^14.0.2",
     "js-yaml": "^4.1.1",
     "jsonc-parser": "^3.3.1",
-    "yaml": "^2.8.2",
     "zod": "^4.3.5"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.0.9",
+    "esbuild": "^0.27.2",
+    "pkg": "^5.8.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
+  },
+  "pkg": {
+    "targets": [
+      "node18-macos-arm64",
+      "node18-macos-x64",
+      "node18-win-x64"
+    ],
+    "outputPath": "packaged",
+    "compress": "GZip"
   }
 }

@@ -17,9 +17,28 @@ npm run build
 
 ## 打包与分发（macOS/Windows 都适用）
 
-本项目当前以 **npm CLI 包** 形式分发（最省事、跨平台）。
+本项目支持两种“软件包”安装方式：
 
-在本仓库目录打包：
+1) **下载可执行文件（推荐）**：在 GitHub Releases 下载对应平台二进制，放到 PATH 里直接运行。
+2) **npm 包**：适合开发者环境或内部统一管理 Node 版本。
+
+### 方式 1：GitHub Releases 可执行文件
+
+进入 Releases 下载：
+
+- macOS Apple Silicon：`mcp-skill-tool-macos-arm64`
+- macOS Intel：`mcp-skill-tool-macos-x64`
+- Windows x64：`mcp-skill-tool-windows-x64.exe`
+
+下载后验证：
+
+```bash
+mcp-skill-tool --help
+```
+
+### 方式 2：npm 包（tgz 或 link）
+
+在本仓库目录打包 tgz：
 
 ```bash
 npm pack
@@ -43,6 +62,15 @@ mcp-skill-tool --help
 npm run build
 npm link
 mcp-skill-tool list
+```
+
+## 发布 Release（维护者）
+
+推 tag 即可触发 GitHub Actions 自动构建并上传二进制到 Releases：
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
 ```
 
 ## 统一 spec

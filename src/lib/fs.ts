@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { parse as parseJsonc, printParseErrorCode } from "jsonc-parser";
+import { parse as parseJsonc, printParseErrorCode } from "jsonc-parser/lib/esm/main.js";
 
 export async function pathExists(filePath: string): Promise<boolean> {
   try {
@@ -54,4 +54,3 @@ export async function readJsonc<T>(filePath: string): Promise<T> {
 export async function writeJson(filePath: string, value: unknown): Promise<void> {
   await writeTextAtomic(filePath, JSON.stringify(value, null, 2) + "\n");
 }
-
