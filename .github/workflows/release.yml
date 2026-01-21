@@ -74,7 +74,10 @@ jobs:
           if (-not $makensis) { throw "makensis not found (nsis install succeeded, but makensis.exe not located)" }
           & $makensis installer/windows/installer.nsi
           New-Item -ItemType Directory -Force -Path packaged | Out-Null
-          Move-Item -Force mcp-skill-tool-setup.exe packaged/mcp-skill-tool-${{ github.ref_name }}-setup.exe
+          $out1 = "installer\\windows\\mcp-skill-tool-setup.exe"
+          $out2 = "mcp-skill-tool-setup.exe"
+          $src = if (Test-Path $out1) { $out1 } elseif (Test-Path $out2) { $out2 } else { throw "NSIS output not found" }
+          Move-Item -Force $src packaged/mcp-skill-tool-${{ github.ref_name }}-setup.exe
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.out }}
