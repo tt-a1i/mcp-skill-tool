@@ -36,6 +36,19 @@ npm run build
 mcp-skill-tool --help
 ```
 
+### 方式 1.5：双击安装包（更像“软件安装”）
+
+Releases 同时提供安装器：
+
+- macOS：`mcp-skill-tool-<version>.pkg`（双击安装到 `/usr/local/bin/mcp-skill-tool`）
+- Windows：`mcp-skill-tool-v<version>-setup.exe`（双击安装到 `Program Files`；可选加入 PATH）
+
+安装后在终端/PowerShell 运行：
+
+```bash
+mcp-skill-tool --help
+```
+
 ### 方式 2：npm 包（tgz 或 link）
 
 在本仓库目录打包 tgz：

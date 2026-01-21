@@ -34,10 +34,37 @@ jobs:
       - run: npm ci
       - run: npm run bundle
       - run: npx pkg build/bundle.cjs --targets ${{ matrix.target }} --output packaged/${{ matrix.out }}
+      - name: Build macOS pkg installer
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          chmod +x installer/macos/build-pkg.sh
+          VERSION="${GITHUB_REF_NAME#v}" bash installer/macos/build-pkg.sh
+      - name: Build Windows installer (NSIS)
+        if: startsWith(matrix.os, 'windows')
+        shell: powershell
+        run: |
+          choco install nsis -y
+          $ver = "${{ github.ref_name }}".TrimStart("v")
+          (Get-Content installer/windows/installer.nsi) `
+            -replace 'PRODUCT_VERSION \"[^\"]+\"', ('PRODUCT_VERSION \"' + $ver + '\"') | `
+            Set-Content installer/windows/installer.nsi
+          & "$Env:ProgramFiles(x86)\\NSIS\\makensis.exe" installer/windows/installer.nsi
+          New-Item -ItemType Directory -Force -Path packaged | Out-Null
+          Move-Item -Force mcp-skill-tool-setup.exe packaged/mcp-skill-tool-${{ github.ref_name }}-setup.exe
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.out }}
           path: packaged/${{ matrix.out }}
+      - uses: actions/upload-artifact@v4
+        if: startsWith(matrix.os, 'macos')
+        with:
+          name: mcp-skill-tool-macos-pkg
+          path: packaged/*.pkg
+      - uses: actions/upload-artifact@v4
+        if: startsWith(matrix.os, 'windows')
+        with:
+          name: mcp-skill-tool-windows-installer
+          path: packaged/*setup.exe
 
   publish:
     runs-on: ubuntu-latest

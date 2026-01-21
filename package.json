@@ -16,6 +16,7 @@
     "dev": "tsx src/index.ts",
     "prepack": "npm run build",
     "package": "npm run bundle && pkg build/bundle.cjs --targets node18-macos-arm64 --output packaged/mcp-skill-tool-macos-arm64 && pkg build/bundle.cjs --targets node18-macos-x64 --output packaged/mcp-skill-tool-macos-x64 && pkg build/bundle.cjs --targets node18-win-x64 --output packaged/mcp-skill-tool-windows-x64.exe",
+    "package:macos-pkg": "npm run package && bash installer/macos/build-pkg.sh",
     "test": "npm run build && node dist/index.js --help"
   },
   "keywords": [],
