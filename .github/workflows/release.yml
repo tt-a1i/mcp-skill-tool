@@ -43,7 +43,7 @@ jobs:
         if: startsWith(matrix.os, 'windows')
         shell: powershell
         run: |
-          choco install nsis -y
+          choco install nsis.install -y
           $ver = "${{ github.ref_name }}".TrimStart("v")
           (Get-Content installer/windows/installer.nsi) `
             -replace 'PRODUCT_VERSION \"[^\"]+\"', ('PRODUCT_VERSION \"' + $ver + '\"') | `
@@ -52,7 +52,7 @@ jobs:
           if (-not $makensis) { $makensis = (Get-Command makensis -ErrorAction SilentlyContinue).Source }
           if (-not $makensis) {
             $candidates = @(
-              "$Env:ProgramFiles(x86)\\NSIS\\makensis.exe",
+              (Join-Path $Env:ProgramFiles(x86) "NSIS\\makensis.exe"),
               "$Env:ProgramFiles\\NSIS\\makensis.exe",
               "C:\\ProgramData\\chocolatey\\bin\\makensis.exe"
             )
