@@ -50,7 +50,11 @@ jobs:
             Set-Content installer/windows/installer.nsi
           $makensis = (Get-Command makensis.exe -ErrorAction SilentlyContinue).Source
           if (-not $makensis) { $makensis = (Get-Command makensis -ErrorAction SilentlyContinue).Source }
-          if (-not $makensis) { throw "makensis not found on PATH" }
+          if (-not $makensis) {
+            $found = Get-ChildItem "C:\\ProgramData\\chocolatey\\lib\\nsis" -Recurse -Filter makensis.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($found) { $makensis = $found.FullName }
+          }
+          if (-not $makensis) { throw "makensis not found (nsis install succeeded, but makensis.exe not located)" }
           & $makensis installer/windows/installer.nsi
           New-Item -ItemType Directory -Force -Path packaged | Out-Null
           Move-Item -Force mcp-skill-tool-setup.exe packaged/mcp-skill-tool-${{ github.ref_name }}-setup.exe
@@ -61,12 +65,12 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: startsWith(matrix.os, 'macos')
         with:
-          name: mcp-skill-tool-macos-pkg
+          name: mcp-skill-tool-macos-pkg-${{ matrix.target }}
           path: packaged/*.pkg
       - uses: actions/upload-artifact@v4
         if: startsWith(matrix.os, 'windows')
         with:
-          name: mcp-skill-tool-windows-installer
+          name: mcp-skill-tool-windows-installer-${{ matrix.target }}
           path: packaged/*setup.exe
 
   publish:
