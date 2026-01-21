@@ -51,8 +51,25 @@ jobs:
           $makensis = (Get-Command makensis.exe -ErrorAction SilentlyContinue).Source
           if (-not $makensis) { $makensis = (Get-Command makensis -ErrorAction SilentlyContinue).Source }
           if (-not $makensis) {
-            $found = Get-ChildItem "C:\\ProgramData\\chocolatey\\lib\\nsis" -Recurse -Filter makensis.exe -ErrorAction SilentlyContinue | Select-Object -First 1
-            if ($found) { $makensis = $found.FullName }
+            $candidates = @(
+              "$Env:ProgramFiles(x86)\\NSIS\\makensis.exe",
+              "$Env:ProgramFiles\\NSIS\\makensis.exe",
+              "C:\\ProgramData\\chocolatey\\bin\\makensis.exe"
+            )
+            foreach ($p in $candidates) { if (Test-Path $p) { $makensis = $p; break } }
+          }
+          if (-not $makensis) {
+            $roots = @(
+              "C:\\ProgramData\\chocolatey\\lib\\nsis",
+              "$Env:ProgramFiles(x86)\\NSIS",
+              "$Env:ProgramFiles\\NSIS"
+            )
+            foreach ($r in $roots) {
+              if (Test-Path $r) {
+                $found = Get-ChildItem $r -Recurse -Filter makensis.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+                if ($found) { $makensis = $found.FullName; break }
+              }
+            }
           }
           if (-not $makensis) { throw "makensis not found (nsis install succeeded, but makensis.exe not located)" }
           & $makensis installer/windows/installer.nsi
