@@ -8,8 +8,9 @@ OUTDIR="$ROOT_DIR/packaged"
 VERSION="${VERSION:-$(node -p "require('${ROOT_DIR}/package.json').version")}"
 IDENTIFIER="${IDENTIFIER:-ai.opencode.mcp-skill-tool}"
 
-BIN_SRC="$ROOT_DIR/packaged/mcp-skill-tool-macos-arm64"
+BIN_SRC="${BIN_SRC:-$ROOT_DIR/packaged/mcp-skill-tool-macos-arm64}"
 BIN_NAME="mcp-skill-tool"
+PKG_BASENAME="${PKG_BASENAME:-mcp-skill-tool-${VERSION}}"
 
 if [[ ! -f "$BIN_SRC" ]]; then
   echo "Missing binary: $BIN_SRC"
@@ -28,7 +29,6 @@ pkgbuild \
   --identifier "$IDENTIFIER" \
   --version "$VERSION" \
   --install-location "/" \
-  "$OUTDIR/mcp-skill-tool-${VERSION}.pkg"
+  "$OUTDIR/${PKG_BASENAME}.pkg"
 
-echo "Wrote: $OUTDIR/mcp-skill-tool-${VERSION}.pkg"
-
+echo "Wrote: $OUTDIR/${PKG_BASENAME}.pkg"

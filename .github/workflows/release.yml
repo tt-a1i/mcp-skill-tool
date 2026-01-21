@@ -38,7 +38,7 @@ jobs:
         if: startsWith(matrix.os, 'macos')
         run: |
           chmod +x installer/macos/build-pkg.sh
-          VERSION="${GITHUB_REF_NAME#v}" bash installer/macos/build-pkg.sh
+          VERSION="${GITHUB_REF_NAME#v}" BIN_SRC="packaged/${{ matrix.out }}" PKG_BASENAME="mcp-skill-tool-${GITHUB_REF_NAME#v}-${{ matrix.target }}" bash installer/macos/build-pkg.sh
       - name: Build Windows installer (NSIS)
         if: startsWith(matrix.os, 'windows')
         shell: powershell
@@ -48,7 +48,10 @@ jobs:
           (Get-Content installer/windows/installer.nsi) `
             -replace 'PRODUCT_VERSION \"[^\"]+\"', ('PRODUCT_VERSION \"' + $ver + '\"') | `
             Set-Content installer/windows/installer.nsi
-          & "$Env:ProgramFiles(x86)\\NSIS\\makensis.exe" installer/windows/installer.nsi
+          $makensis = (Get-Command makensis.exe -ErrorAction SilentlyContinue).Source
+          if (-not $makensis) { $makensis = (Get-Command makensis -ErrorAction SilentlyContinue).Source }
+          if (-not $makensis) { throw "makensis not found on PATH" }
+          & $makensis installer/windows/installer.nsi
           New-Item -ItemType Directory -Force -Path packaged | Out-Null
           Move-Item -Force mcp-skill-tool-setup.exe packaged/mcp-skill-tool-${{ github.ref_name }}-setup.exe
       - uses: actions/upload-artifact@v4
