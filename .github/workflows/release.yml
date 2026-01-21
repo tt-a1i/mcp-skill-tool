@@ -52,7 +52,7 @@ jobs:
           if (-not $makensis) { $makensis = (Get-Command makensis -ErrorAction SilentlyContinue).Source }
           if (-not $makensis) {
             $candidates = @(
-              (Join-Path $Env:ProgramFiles(x86) "NSIS\\makensis.exe"),
+              (Join-Path ${Env:ProgramFiles(x86)} "NSIS\\makensis.exe"),
               "$Env:ProgramFiles\\NSIS\\makensis.exe",
               "C:\\ProgramData\\chocolatey\\bin\\makensis.exe"
             )
